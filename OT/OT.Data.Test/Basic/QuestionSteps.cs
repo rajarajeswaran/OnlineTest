@@ -17,6 +17,7 @@ namespace OT.Data.Test.Basic
         const string OptionTitleC = "OptionTitleC";
         const string OptionTitleD = "OptionTitleD";
         const string AnswerTitle = "AnswerTitle";
+        const string DocId = "DocId";
 
         public Repository Repository { get; set; }
 
@@ -74,13 +75,15 @@ namespace OT.Data.Test.Basic
                 Answer = new Answer { Title = ScenarioContext.Current[AnswerTitle].ToString() }
 
             };
-            Repository.Add<Question>(question);
+            var  docId =Repository.Add<Question>(question);
+            ScenarioContext.Current[DocId] = docId;
         }
 
         [When(@"I Query by Question (.*)")]
         public void WhenIQueryByQuestion(string questionTitle)
         {
-            ScenarioContext.Current.Pending();
+            var docId = ScenarioContext.Current[DocId] as string;
+            Repository.Query<Question>(docId, questionTitle);
         }
 
         [Then(@"the result should be a valid Question Model")]
